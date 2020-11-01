@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Card from '@material-ui/core/Card'
+import Button from '@material-ui/core/Button'
 import CardContent from '@material-ui/core/CardContent'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -9,21 +10,20 @@ import ReceiptIcon from '@material-ui/icons/Receipt'
 import Typography from '@material-ui/core/Typography'
 import { ToDoListForm } from './ToDoListForm'
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-const getPersonalTodos = () => {
-  return sleep(1000).then(() => Promise.resolve({
-    '0000000001': {
-      id: '0000000001',
-      title: 'First List',
-      todos: ['First todo of first list!']
+const postNewTodoList = ({id, title, todos}) => {
+  fetch("http://localhost:3001/todo", { 
+    method: 'POST', 
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8'
     },
-    '0000000002': {
-      id: '0000000002',
-      title: 'Second List',
-      todos: ['First todo of second list!']
-    }
-  }))
+    body: JSON.stringify({
+      [id]: { // make a string? maybe id++ for every new? 
+        id, 
+        title, 
+        todos
+      }
+    })
+  })
 }
 
 export const ToDoLists = ({ style }) => {
@@ -31,9 +31,20 @@ export const ToDoLists = ({ style }) => {
   const [activeList, setActiveList] = useState()
 
   useEffect(() => {
-    getPersonalTodos()
-      .then(setToDoLists)
+    fetchData()
   }, [])
+
+  const fetchData = () => {
+    fetch("http://localhost:3001/todo")
+    .then(response => {
+      console.log(response);
+      return response.json(); 
+    })
+    .then(setToDoLists)
+    .catch(err => {
+      console.log(err);
+    })
+  }
 
   if (!Object.keys(toDoLists).length) return null
   return <Fragment>
@@ -69,5 +80,36 @@ export const ToDoLists = ({ style }) => {
         })
       }}
     />}
+
+      <Button onClick={ () => postNewTodoList(
+        {
+          id: 3, 
+          title: 'hey', 
+          todos: ['yeah']
+        }
+      ) }>
+
+        Add todo
+      </Button>
+
   </Fragment>
 }
+
+/* TO DO
+  * MAIN TASK * 
+    - When "add todo" (now generated hard coded -> make user insert data)
+      - Open up "Add title"
+      - Open up "Add tasks" (maybe)
+      - Add "add" button
+
+    - Add styling "Add todo" button
+    - Add general UX & styling 
+
+    - (MAYBE) When have pressed specific "todo" from todo-list, and press "save" -> collapse list item
+
+  * ADDITIONAL TASKS * 
+    1. Autosave when added task
+    2. Add date for completion to todo items -> indicate remaining time / overdue 
+    3. (Make it possible to) indicate that a todo is completed
+    4. Indicate that todolist is completed if all todo items within are completed
+*/

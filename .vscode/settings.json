@@ -2,5 +2,6 @@
   "eslint.workingDirectories": [
     "./backend", 
     "./frontend"
-  ]
+  ],
+  "liveServer.settings.port": 5501
 }
