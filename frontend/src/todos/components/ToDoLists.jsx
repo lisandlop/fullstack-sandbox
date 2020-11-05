@@ -34,6 +34,7 @@ export const ToDoLists = ({ style }) => {
       console.log(err);
     })
   }
+  
 
   // Posts/adds new todo list 
   const postNewTodoList = ({id, title, todos, completed}) => {
@@ -55,7 +56,13 @@ export const ToDoLists = ({ style }) => {
           completed
         }
       })
-    }).then(setToDoLists)
+    }).then(response => {
+      console.log(response);
+      return response.json(); 
+    })
+    .then(setToDoLists)
+    
+    // .then(setToDoLists)
   }
 
   if (!Object.keys(toDoLists).length) return null
