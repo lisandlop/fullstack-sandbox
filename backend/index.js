@@ -1,3 +1,4 @@
+
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
@@ -7,17 +8,20 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
+// Moved data to backend from "ToDoList.jsx"
 let initialData = {
     '0000000001': {
         id: '0000000001',
         title: 'First List',
-        todos: ['First todo of first list!']
+        todos: ['First todo of first list!'], 
+        completed: false
     },
-    '0000000002': {
-        id: '0000000002',
-        title: 'Second List',
-        todos: ['First todo of second list!']
-    }
+    // '0000000002': {
+    //     id: '0000000002',
+    //     title: 'Second List',
+    //     todos: ['First todo of second list!'], 
+    //     completed: false
+    // }
 }
 
 const PORT = 3001

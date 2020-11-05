@@ -9,18 +9,26 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ReceiptIcon from '@material-ui/icons/Receipt'
 import Typography from '@material-ui/core/Typography'
 import { ToDoListForm } from './ToDoListForm'
+import { Form } from './Form'
 
-const postNewTodoList = ({id, title, todos}) => {
+// Posts/adds new todo list 
+const postNewTodoList = ({id, title, todos, completed}) => {
+  console.log('completed: ', completed);
+  console.log('todos: ', todos);
+  console.log('title: ', title);
+  console.log('id: ', id);
+
   fetch("http://localhost:3001/todo", { 
     method: 'POST', 
     headers: {
       'Content-Type': 'application/json; charset=UTF-8'
     },
     body: JSON.stringify({
-      [id]: { // make a string? maybe id++ for every new? 
+      [id]: {
         id, 
         title, 
-        todos
+        todos, 
+        completed
       }
     })
   })
@@ -30,10 +38,14 @@ export const ToDoLists = ({ style }) => {
   const [toDoLists, setToDoLists] = useState({})
   const [activeList, setActiveList] = useState()
 
+  const [inputValue, setInputValue] = useState("");
+  const [todoList, setTodoList] = useState([]); // SAMMA SOM FÖRSTA
+
   useEffect(() => {
     fetchData()
   }, [])
 
+  // OWN
   const fetchData = () => {
     fetch("http://localhost:3001/todo")
     .then(response => {
@@ -47,7 +59,9 @@ export const ToDoLists = ({ style }) => {
   }
 
   if (!Object.keys(toDoLists).length) return null
+  console.log(Object.keys(toDoLists)); // THE TODO LIST ARRAY (with updated)
   return <Fragment>
+        <Form inputValue={inputValue} setInputValue={setInputValue} todoList={todoList} setTodoList={setTodoList} postNewTodoList={postNewTodoList}/>
     <Card style={style}>
       <CardContent>
         <Typography
@@ -69,47 +83,47 @@ export const ToDoLists = ({ style }) => {
         </List>
       </CardContent>
     </Card>
-    {toDoLists[activeList] && <ToDoListForm
+    {toDoLists[activeList] && <ToDoListForm // ToDoListForm component
       key={activeList} // use key to make React recreate component to reset internal state
       toDoList={toDoLists[activeList]}
       saveToDoList={(id, { todos }) => {
         const listToUpdate = toDoLists[id]
+        console.log('listToUpdate: ', listToUpdate);
         setToDoLists({
           ...toDoLists,
           [id]: { ...listToUpdate, todos }
         })
       }}
     />}
-
       <Button onClick={ () => postNewTodoList(
         {
-          id: 3, 
+          id: 10, 
           title: 'hey', 
-          todos: ['yeah']
+          todos: ['yeah'], 
+          completed: false
         }
       ) }>
-
-        Add todo
+        Add Todo List
       </Button>
-
   </Fragment>
 }
 
 /* TO DO
   * MAIN TASK * 
-    - When "add todo" (now generated hard coded -> make user insert data)
-      - Open up "Add title"
-      - Open up "Add tasks" (maybe)
-      - Add "add" button
-
-    - Add styling "Add todo" button
-    - Add general UX & styling 
-
+    - Add general UX & styling (where to put "add"?) / (colors&font)
+    - Lägg till FONT (läggs till på text!!! men inte allt annat)
+    - Lägg till media queries för margin på card i Form.jsx
     - (MAYBE) When have pressed specific "todo" from todo-list, and press "save" -> collapse list item
+    - (MAYBE) Add styling "Add todo" button
 
   * ADDITIONAL TASKS * 
     1. Autosave when added task
-    2. Add date for completion to todo items -> indicate remaining time / overdue 
-    3. (Make it possible to) indicate that a todo is completed
-    4. Indicate that todolist is completed if all todo items within are completed
+    2. (Make it possible to) indicate that a todo is completed
+        - maybe press checkbox? 
+        - text-decoration: overline (?) & opacity 0.5
+        - change "completed" till true
+        - do toggle so that can set to false and undo
+    3. Indicate that todolist is completed if all todo items within are completed
+        - if all todos in todoList has completed=true -> mark as green or overline/opacity
+    4. Add date for completion to todo items -> indicate remaining time / overdue 
 */

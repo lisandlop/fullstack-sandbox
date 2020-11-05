@@ -41,6 +41,8 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
           {toDoList.title}
         </Typography>
         <form onSubmit={handleSubmit} className={classes.form}>
+          {/* {!todos ? 'nothing here' : 'very much here'}
+          {console.log('todos: ', todos)} */}
           {todos.map((name, index) => (
             <div key={index} className={classes.todoLine}>
               <Typography className={classes.standardSpace} variant='h6'>

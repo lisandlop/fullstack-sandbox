@@ -3,9 +3,19 @@ import './App.css'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
+// import { makeStyles } from '@material-ui/core/styles';
 import { ToDoLists } from './todos/components/ToDoLists'
+// import { Form } from './todos/components/Form'
+
+// const useStyles = makeStyles((theme) => ({
+//   text: {
+//       fontFamily: 'Space Grotesk, sans-serif'
+//   },
+//   color: '#0662c8'
+// }));
 
 const MainAppBar = () => {
+  // const classes = useStyles();
   return <AppBar position='static' color='primary'>
     <Toolbar>
       <Typography variant='h6' color='inherit'>
