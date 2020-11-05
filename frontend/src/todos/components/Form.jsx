@@ -36,7 +36,11 @@ const useStyles = makeStyles((theme) => ({
 //     },
 // });
 
-export const Form = ( {inputValue, setInputValue, todoList, setTodoList, postNewTodoList} ) => {
+export const Form = ( {inputValue, setInputValue, toDoLists, setToDoLists, postNewTodoList, setNewTodoList, newTodoList
+
+} ) => {
+    console.log(toDoLists);
+    console.log(newTodoList);
     const classes = useStyles();
     const handleSubmitTodo = e => {
         e.preventDefault();
@@ -47,8 +51,20 @@ export const Form = ( {inputValue, setInputValue, todoList, setTodoList, postNew
         let uniqueId = uuid.v4(); 
 
         ///// BEHÖVER INTE DETTA NEDAN
-        setTodoList([
-            ...todoList, {
+        // setToDoLists([
+        //     ...toDoLists, { 
+        //         [uniqueId]: {
+        //             id: [uniqueId],
+        //             title: inputValue,
+        //             todos: [], 
+        //             completed: false
+        //         }
+        //     }
+        // ])
+        ///// BEHÖVER INTE DETTA OVAN
+
+        setNewTodoList([
+            ...newTodoList, { 
                 [uniqueId]: {
                     id: [uniqueId],
                     title: inputValue,
@@ -57,7 +73,6 @@ export const Form = ( {inputValue, setInputValue, todoList, setTodoList, postNew
                 }
             }
         ])
-        ///// BEHÖVER INTE DETTA OVAN
 
         postNewTodoList({
                 id: [uniqueId],
@@ -65,7 +80,7 @@ export const Form = ( {inputValue, setInputValue, todoList, setTodoList, postNew
                 todos: [], 
                 completed: false
         })
-        window.location.reload(); 
+
         setInputValue(""); 
     }
 

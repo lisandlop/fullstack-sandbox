@@ -8,38 +8,15 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ReceiptIcon from '@material-ui/icons/Receipt'
 import Typography from '@material-ui/core/Typography'
+
 import { ToDoListForm } from './ToDoListForm'
 import { Form } from './Form'
 
-// Posts/adds new todo list 
-const postNewTodoList = ({id, title, todos, completed}) => {
-  console.log('completed: ', completed);
-  console.log('todos: ', todos);
-  console.log('title: ', title);
-  console.log('id: ', id);
-
-  fetch("http://localhost:3001/todo", { 
-    method: 'POST', 
-    headers: {
-      'Content-Type': 'application/json; charset=UTF-8'
-    },
-    body: JSON.stringify({
-      [id]: {
-        id, 
-        title, 
-        todos, 
-        completed
-      }
-    })
-  })
-}
-
 export const ToDoLists = ({ style }) => {
-  const [toDoLists, setToDoLists] = useState({})
-  const [activeList, setActiveList] = useState()
-
+  const [toDoLists, setToDoLists] = useState({}) // object with all todo lists
+  const [activeList, setActiveList] = useState() // list of chosen todo list
   const [inputValue, setInputValue] = useState("");
-  const [todoList, setTodoList] = useState([]); // SAMMA SOM FÖRSTA
+  const [newTodoList, setNewTodoList] = useState([]); // SAMMA SOM FÖRSTA
 
   useEffect(() => {
     fetchData()
@@ -58,12 +35,42 @@ export const ToDoLists = ({ style }) => {
     })
   }
 
+  // Posts/adds new todo list 
+  const postNewTodoList = ({id, title, todos, completed}) => {
+    console.log('completed: ', completed);
+    console.log('todos: ', todos);
+    console.log('title: ', title);
+    console.log('id: ', id);
+
+    fetch("http://localhost:3001/todo", { 
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8'
+      },
+      body: JSON.stringify({
+        [id]: {
+          id, 
+          title, 
+          todos, 
+          completed
+        }
+      })
+    }).then(setToDoLists)
+  }
+
   if (!Object.keys(toDoLists).length) return null
   console.log(Object.keys(toDoLists)); // THE TODO LIST ARRAY (with updated)
   return <Fragment>
-        <Form inputValue={inputValue} setInputValue={setInputValue} todoList={todoList} setTodoList={setTodoList} postNewTodoList={postNewTodoList}/>
+    {console.log(toDoLists)}
+    
+    {/* <Form inputValue={inputValue} setInputValue={setInputValue} newTodoList={newTodoList} setNewTodoList={setNewTodoList} postNewTodoList={postNewTodoList}/> */}
+    <Form inputValue={inputValue} setInputValue={setInputValue} toDoLists={toDoLists} setToDoLists={setToDoLists} postNewTodoList={postNewTodoList}
+    
+    newTodoList={newTodoList} setNewTodoList={setNewTodoList}
+
+    />
     <Card style={style}>
-      <CardContent>
+      <CardContent style={{fontFamilty: 'Space Grotesk'}}>
         <Typography
           component='h2'
         >

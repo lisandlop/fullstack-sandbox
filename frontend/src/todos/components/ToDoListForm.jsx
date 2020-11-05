@@ -81,6 +81,7 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
               color='primary'
               onClick={() => {
                 setTodos([...todos, ''])
+                console.log('setTodos: ', toDoList);
               }}
             >
               Add Todo <AddIcon />
