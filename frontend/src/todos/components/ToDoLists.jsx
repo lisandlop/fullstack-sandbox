@@ -16,13 +16,13 @@ export const ToDoLists = ({ style }) => {
   const [toDoLists, setToDoLists] = useState({}) // object with all todo lists
   const [activeList, setActiveList] = useState() // list of chosen todo list
   const [inputValue, setInputValue] = useState("");
-  const [newTodoList, setNewTodoList] = useState([]); // SAMMA SOM FÖRSTA
+  // const [todos, setTodos] = useState(toDoLists[activeList].todos)
 
   useEffect(() => {
     fetchData()
   }, [])
 
-  // OWN
+  // Set data once
   const fetchData = () => {
     fetch("http://localhost:3001/todo")
     .then(response => {
@@ -34,15 +34,10 @@ export const ToDoLists = ({ style }) => {
       console.log(err);
     })
   }
-  
 
   // Posts/adds new todo list 
+  // Kan använda hooks här tack vare inuti komponenten
   const postNewTodoList = ({id, title, todos, completed}) => {
-    console.log('completed: ', completed);
-    console.log('todos: ', todos);
-    console.log('title: ', title);
-    console.log('id: ', id);
-
     fetch("http://localhost:3001/todo", { 
       method: 'POST', 
       headers: {
@@ -61,21 +56,36 @@ export const ToDoLists = ({ style }) => {
       return response.json(); 
     })
     .then(setToDoLists)
-    
-    // .then(setToDoLists)
   }
 
-  if (!Object.keys(toDoLists).length) return null
-  console.log(Object.keys(toDoLists)); // THE TODO LIST ARRAY (with updated)
-  return <Fragment>
-    {console.log(toDoLists)}
-    
-    {/* <Form inputValue={inputValue} setInputValue={setInputValue} newTodoList={newTodoList} setNewTodoList={setNewTodoList} postNewTodoList={postNewTodoList}/> */}
-    <Form inputValue={inputValue} setInputValue={setInputValue} toDoLists={toDoLists} setToDoLists={setToDoLists} postNewTodoList={postNewTodoList}
-    
-    newTodoList={newTodoList} setNewTodoList={setNewTodoList}
+  // // id är todoList id
+  // // todos är array med todo items
+  // const putNewTodoItem = (id, todos) => {
+  //   console.log('todos: ', todos);
+  //   console.log('id: ', id);
+  //   fetch(`http://localhost:3001/todo/${id}/`, {
+  //     method: "PUT",
+  //     headers: { "Content-Type": "application/json; charset=utf-8" },
+  //     body: JSON.stringify({
+  //       todos: todos 
+  //     })
+  //   }).then(response => {
+  //       console.log(response);
+  //       console.log("todos: " + todos);
+  //       return response.json(); 
+  //     })
+  //     .then(setToDoLists) // sätt ny toDoLists och uppdatera server
+  //     // .then(setTodos)
+  //     .catch(e => {
+  //       console.log("ERROR: " + e);
+  //       console.error(e)
+  //     });
+  // }
 
-    />
+  if (!Object.keys(toDoLists).length) return null
+  // console.log(Object.keys(toDoLists)); // THE TODO LIST ARRAY (with updated)
+  return <Fragment>
+    {/* {console.log(toDoLists)} */}
     <Card style={style}>
       <CardContent style={{fontFamilty: 'Space Grotesk'}}>
         <Typography
@@ -101,28 +111,51 @@ export const ToDoLists = ({ style }) => {
       key={activeList} // use key to make React recreate component to reset internal state
       toDoList={toDoLists[activeList]}
       saveToDoList={(id, { todos }) => {
+        console.log('todos: ', todos);
+        // putNewTodoItem(id, todos); 
         const listToUpdate = toDoLists[id]
+        console.log('id: ', id);
+        console.log('toDoLists: ', toDoLists);
         console.log('listToUpdate: ', listToUpdate);
         setToDoLists({
-          ...toDoLists,
+          ...toDoLists, 
           [id]: { ...listToUpdate, todos }
         })
       }}
+      // putNewTodoItem={putNewTodoItem}
     />}
-      <Button onClick={ () => postNewTodoList(
-        {
-          id: 10, 
+    <Form 
+      inputValue={inputValue} 
+      setInputValue={setInputValue} 
+      toDoLists={toDoLists} 
+      setToDoLists={setToDoLists} 
+      postNewTodoList={postNewTodoList}
+    />
+      {/* <Button onClick={ () => postNewTodoList(
+        { id: 10, 
           title: 'hey', 
           todos: ['yeah'], 
-          completed: false
-        }
-      ) }>
+          completed: false }) }>
         Add Todo List
-      </Button>
+      </Button> */}
   </Fragment>
 }
 
 /* TO DO
+///// ///// ///// ///// ///// 
+  *** Save new todo items to server --> USE PUT
+
+  *** Autosave when added task (no need to press save) --> USE ONCHANGE()
+    * right now button "type=submit"
+    * how to submit without button? 
+
+  *** Indicate todo is completed --> CHECKBOX (check id's) & OPACITY & LINEOVER
+    * add completed = false till varje todo item
+    * gör en object istället 
+  
+  (*** Indicate todolist is completed)
+///// ///// ///// ///// ///// 
+
   * MAIN TASK * 
     - Add general UX & styling (where to put "add"?) / (colors&font)
     - Lägg till FONT (läggs till på text!!! men inte allt annat)

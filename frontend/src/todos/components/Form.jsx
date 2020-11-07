@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { TextField, Card, CardContent, CardActions, Button, Typography } from '@material-ui/core'
-import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import uuid from 'uuid'; 
 
@@ -30,41 +30,22 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-// const theme = createMuiTheme({
-//     typography: {
-//         fontFamily: '"Space Grotesk", sans-serif'
-//     },
-// });
-
-export const Form = ( {inputValue, setInputValue, toDoLists, setToDoLists, postNewTodoList, setNewTodoList, newTodoList
-
-} ) => {
-    console.log(toDoLists);
-    console.log(newTodoList);
+export const Form = ( {inputValue, setInputValue, toDoLists, setToDoLists, postNewTodoList} ) => {
+    // console.log(toDoLists);
+    // console.log(newTodoList);
     const classes = useStyles();
     const handleSubmitTodo = e => {
         e.preventDefault();
         if (!inputValue) {
-            console.log("no input value");
+            console.log("No input todo list value");
             return;
         }
+
         let uniqueId = uuid.v4(); 
-
-        ///// BEHÖVER INTE DETTA NEDAN
-        // setToDoLists([
-        //     ...toDoLists, { 
-        //         [uniqueId]: {
-        //             id: [uniqueId],
-        //             title: inputValue,
-        //             todos: [], 
-        //             completed: false
-        //         }
-        //     }
-        // ])
-        ///// BEHÖVER INTE DETTA OVAN
-
-        setNewTodoList([
-            ...newTodoList, { 
+        // genom att göra detta så sätter vi toDoLists variabeln som definieras i toDoLists.jsx till toDoLists + ny
+        // detta är dock endast en setState, gör inget med databasen
+        setToDoLists([
+            ...Object.entries(toDoLists), { 
                 [uniqueId]: {
                     id: [uniqueId],
                     title: inputValue,
@@ -74,13 +55,13 @@ export const Form = ( {inputValue, setInputValue, toDoLists, setToDoLists, postN
             }
         ])
 
+        // sätter saker till databasen 
         postNewTodoList({
                 id: [uniqueId],
                 title: inputValue,
                 todos: [], 
                 completed: false
         })
-
         setInputValue(""); 
     }
 
@@ -96,7 +77,7 @@ export const Form = ( {inputValue, setInputValue, toDoLists, setToDoLists, postN
                     placeholder='Todo List Name'
                     value={inputValue}
                     onChange={event => {
-                        // console.log(event.target.value);
+                        console.log(event.target.value);
                         setInputValue(event.target.value)
                     }}
                     />
