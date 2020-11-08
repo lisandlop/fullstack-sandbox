@@ -4,8 +4,8 @@ import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 // import { makeStyles } from '@material-ui/core/styles';
+
 import { ToDoLists } from './todos/components/ToDoLists'
-// import { Form } from './todos/components/Form'
 
 // const useStyles = makeStyles((theme) => ({
 //   text: {
@@ -51,25 +51,11 @@ class App extends Component {
 
 export default App
 
-/* HJÄLP!
-  * när lägger till ny todo item, just nu lägger endast till inputen
-  --> vi vill lägga till conent: input osv.
-  * visar sig t ex när vi börjar skriva in i inputfield i "add todo", så printas:
-    todoitem: (input) (istället för {content osv})
-    --> får error direkt efter det
-    --> Ska skapa en state och lägga till där istället?! 
-
-  * kan todos.map över en tom todos?
-  * Varför får felmeddelande? 
-*/
-
 // NÄR BLIR [OBJECT OBJECT] --> OFTA FÖR LOGGAR MED KOMMENTAR INNAN LOL
 
 // VARIABLER / HOOKS
 /*
-
 ///// ///// ///// ///// /////
-
 *** USESTATE
 
  ** ToDoLists.jsx
@@ -92,7 +78,6 @@ export default App
   * inputValue (setInputValue) = useState("")
 
 ///// ///// ///// ///// /////
-
 *** PROPS
 
  ** ToDoLists.jsx

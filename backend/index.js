@@ -10,12 +10,10 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-// Moved data to backend from "ToDoList.jsx"
 let initialData = {
     '0000000001': {
         id: '0000000001',
         title: 'First List',
-        // todos: ['First todo of first list!'], 
         todos: [
             {
                 id: 1, 
@@ -60,49 +58,17 @@ app.put("/todo/:id", (req, res) => {
 });
 
 app.delete("/todo/:id", (req, res) => {
-
-    /*
-        * input from frontend: req.body.todo (the todo item to delete)
-        * the server data: initialData[reqId].todos 
-        * want to check:
-            - if req.body.todo.id == initialData[reqId].todos (map) .id
-            --> THEN DELETE FROM SERVER DATA
-            + check if 
-    */
-
     try {
         const reqId = req.params.id;
-        console.log('///// ///// /////');
-        console.log(initialData[reqId].todos);
-        console.log(req.body.todo) // --> den todo/item vi trycker på 
-        //let item = initialData[reqId].todos.filter(d => d['id'] == req.body.todo.id)
+        // console.log(initialData[reqId].todos);
+        // console.log(req.body.todo) // --> den todo/item vi trycker på 
         let itemList = initialData[reqId].todos.map( item => item['id'])
-        console.log('itemList before: ' + itemList) // --> id's av hela todo list
-        let index = itemList.indexOf(req.body.todo.id + 1)
-        console.log('index outside if before: ', index); // --> vald todo id
+        let index = itemList.indexOf(req.body.todo.id)
 
-        if (index != -1 && req.body.todo.id == index) {
-            console.log("req id: " + req.body.todo.id);
-            console.log("index: " + index);
-            console.log("THE SAME!");
-            initialData[reqId].todos.splice(req.body.todo.id - 1, 1); 
+        if (index != -1) {
+            initialData[reqId].todos.splice(index, 1); 
         }
-
-        // if(index != -1) {
-
-        //     console.log('index inside if: ', index); // --> samma id/index
-        //     console.log('delete')
-        //     itemList.splice(index, 1); 
-        //     console.log('itemList inside after: ' + itemList ); // --> 
-
-        //     // lista, delete object om vet index i listan
-        //     // initialData[reqId].todos = req.body.todo; 
-
-        //     // vill delete req.body.todo från initialData[reqId].todos
-        // }
-        // console.log('index outside if after: ', index);
-        // console.log('itemList after: ' + itemList );
-        console.log(initialData[reqId].todos);
+        // console.log(initialData[reqId].todos);
         res.send(initialData[reqId].todos)
     }
     catch(error) {
