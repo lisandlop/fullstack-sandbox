@@ -86,7 +86,6 @@ export const ToDoLists = ({ style }) => {
       }}
       fetchData={fetchData}
     />}
-
     <Form 
       toDoLists={toDoLists} 
       setToDoLists={setToDoLists} 

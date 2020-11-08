@@ -4,13 +4,6 @@ import { TextField, Card, CardContent, CardActions, Checkbox, Button, Typography
 import DeleteIcon from '@material-ui/icons/Delete'
 import AddIcon from '@material-ui/icons/Add'
 
-// *** AUTOSAVE
-  // * why does it delete some letters? --> it sends and then deletes and write them out again --> maybe due to value = todoItem.content ? 
-
-// *** MARK TODO ITEMS AS "DONE"
-  // * + overline & opacity
-  // * other checked colour 
-
 const useStyles = makeStyles({
   card: {
     margin: '1rem'
@@ -98,19 +91,18 @@ export const ToDoListForm = ({ toDoList, saveToDoList, fetchData }) => {
               <Checkbox
                 checked={todoItem.complete}
                 onChange={e => { handleCheckChange(e.target.checked, todoItem) }}
-                inputProps={{ color: 'secondary' }}
+                style={{color: 'green'}}
               />
               <TextField
                 label='What to do?'
                 value={todoItem.content}
                 className={classes.textField}
-
                 onChange={event => {
+                  /* Not quite working correctly */
                   let selectedItem = todos[index]
                   selectedItem["content"] = event.target.value;
                   todos[index] = selectedItem;
                   setTodos([...todos])
-
                   /* 
                   setTodos([ // immutable update
                     ...todos.slice(0, index),
@@ -118,7 +110,6 @@ export const ToDoListForm = ({ toDoList, saveToDoList, fetchData }) => {
                     ...todos.slice(index + 1)
                   ])
                   */
-
                   saveTodoItem(toDoList.id, todos)
                   fetchData()
                 }}

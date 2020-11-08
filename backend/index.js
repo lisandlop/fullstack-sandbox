@@ -19,7 +19,7 @@ let initialData = {
             }, 
             {
                 id: 2, 
-                content: 'Seconddd', 
+                content: 'Second todo item', 
                 complete: false
             }
         ], 
