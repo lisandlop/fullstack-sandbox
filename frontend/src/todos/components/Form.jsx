@@ -34,15 +34,14 @@ export const Form = ( {toDoLists, setToDoLists, postNewTodoList} ) => {
     const [inputValue, setInputValue] = useState(""); // input value in "add todos"
 
     const classes = useStyles();
+
     const handleSubmitTodo = e => {
         e.preventDefault();
         if (!inputValue) {
             console.log("No input todo list value");
             return;
         }
-        console.log(inputValue);
         let uniqueId = uuid.v4(); 
-
         setToDoLists([
             ...Object.entries(toDoLists), { 
                 [uniqueId]: {
@@ -74,7 +73,6 @@ export const Form = ( {toDoLists, setToDoLists, postNewTodoList} ) => {
                     placeholder='Todo List Name'
                     value={inputValue}
                     onChange={event => {
-                        console.log(event.target.value);
                         setInputValue(event.target.value)
                     }}
                     />

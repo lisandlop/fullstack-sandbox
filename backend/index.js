@@ -3,9 +3,6 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const app = express()
 
-// fix delete
-// fix autosave
-
 app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -56,19 +53,14 @@ app.put("/todo/:id", (req, res) => {
         res.status(500).json(error)
     }
 });
-
 app.delete("/todo/:id", (req, res) => {
     try {
         const reqId = req.params.id;
-        // console.log(initialData[reqId].todos);
-        // console.log(req.body.todo) // --> den todo/item vi trycker på 
         let itemList = initialData[reqId].todos.map( item => item['id'])
         let index = itemList.indexOf(req.body.todo.id)
-
         if (index != -1) {
             initialData[reqId].todos.splice(index, 1); 
         }
-        // console.log(initialData[reqId].todos);
         res.send(initialData[reqId].todos)
     }
     catch(error) {
