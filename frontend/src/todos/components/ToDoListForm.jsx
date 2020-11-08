@@ -33,14 +33,49 @@ const useStyles = makeStyles({
 })
 
 // toDoList NOT toDoLists
-export const ToDoListForm = ({ toDoList, saveToDoList, 
-  // putNewTodoItem 
-}) => {
+export const ToDoListForm = ({ toDoList, saveToDoList }) => {
+  // toDoList = the selected, active, todo list 
+  // saveToDoList = function to save toDoList new todo items
   const classes = useStyles()
   const [todos, setTodos] = useState(toDoList.todos)
 
-  console.log(`todos: ${todos}`);
-  console.log(`todoList: ${toDoList.todos}`);
+  const putNewTodoItem = async (toDoListId, todos) => { // saveTodoItems!
+    fetch(`http://localhost:3001/todo/${toDoListId}/`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify({
+        todos: todos
+      })
+    }).then(response => {
+        console.log(response);
+        //console.log(todos);
+        return response.json(); 
+      })
+      .then(setTodos) // servern uppdaterad, nu todos uppdateras hos clienten
+      .catch(e => {
+        console.log("ERROR: " + e);
+        console.error(e)
+      });
+  }
+
+  const deleteTodoitem = async (toDoListId, todoItem) => {
+    fetch(`http://localhost:3001/todo/${toDoListId}/`, {
+     method: "DELETE",
+       headers: { "Content-Type": "application/json; charset=utf-8" },
+       body: JSON.stringify({
+         todo: todoItem
+       })
+     }).then(response => {
+        console.log(response);
+        //console.log(todos);
+        return response.json(); 
+      })
+      .then(setTodos) // servern är uppdaterad och nu ska todos uppdateras hos clienten
+      .catch(e => {
+        console.log("ERROR: " + e);
+        console.error(e)
+      });
+  }
 
   const handleSubmit = event => {
     event.preventDefault()
@@ -50,11 +85,9 @@ export const ToDoListForm = ({ toDoList, saveToDoList,
 
   // NOT WORKING YET
   const handleCheckChange = (checkedStatus, todoItem) => {
-
     console.log("INSIDE CHANGE TODOS: " + todos);
     console.log('todoItem: ', todoItem);
     console.log('checkedStatus: ', checkedStatus);
-
     setTodos(todos.map(
       (item) => {
         console.log(item.id);
@@ -94,37 +127,11 @@ export const ToDoListForm = ({ toDoList, saveToDoList,
     //   console.log("FALSE");
     //   // styling back 
     // }
-
     saveToDoList(toDoList.id, { todos })
     // putNewTodoItem(toDoList.id, todos)
   }
 
-  // id är todoList id
-  // todos är array med todo items
-  // const putNewTodoItem = (id, todos) => {
-  //   console.log('todos: ', todos);
-  //   console.log('id: ', id);
-  //   fetch(`http://localhost:3001/todo/${id}/`, {
-  //     method: "PUT",
-  //     headers: { "Content-Type": "application/json; charset=utf-8" },
-  //     body: JSON.stringify({
-  //       todos: todos 
-  //     })
-  //   }).then(response => {
-  //       console.log(response);
-  //       console.log("todos: " + todos);
-  //       return response.json(); 
-  //     })
-  //     .then(setTodos) // sätt ny toDoLists och uppdatera server
-  //     // .then(setTodos)
-  //     .catch(e => {
-  //       console.log("ERROR: " + e);
-  //       console.error(e)
-  //     });
-  // }
-
   useEffect(() => {
-    
   }, [])
 
   return (
@@ -133,73 +140,92 @@ export const ToDoListForm = ({ toDoList, saveToDoList,
         <Typography component='h2'>
           {toDoList.title}
         </Typography>
+
         <form onSubmit={handleSubmit} className={classes.form}>
-          {/* {!todos ? 'nothing here' : 'very much here'}
-          {console.log('todos: ', todos)} */}
-          {todos.map((todoItem, index) => (
+          {todos.map((todoItem, index) => ( 
             <div key={index} className={classes.todoLine}>
               <Typography className={classes.standardSpace} variant='h6'>
                 {index + 1}
+                {/* {console.log('todoItem ', todoItem)} */}
               </Typography>
               <Checkbox
                 // checked={todoItem.completed}
-                onChange={e => 
-                  {
-                    // console.log(todoItem);
-                    // console.log(index);
-                    handleCheckChange(e.target.checked, todoItem)
-                  }
-                }
+                onChange={e => { handleCheckChange(e.target.checked, todoItem) }}
                 // inputProps={{ color: 'primary checkbox' }}
               />
               <TextField
                 label='What to do?'
-                value={todoItem}
+                value={todoItem.content}
+
+                // onInput={event => {
+                //   let selectedItem = todos[index]
+                //   selectedItem["content"] = event.target.value;
+                //   todos[index] = selectedItem;
+                //   setTodos([...todos]) //setTodo({...myobj})
+                //   putNewTodoItem(toDoList.id, todos)
+                // }}
+
                 onChange={event => {
-                  console.log(event.target.value);
-                  setTodos([ // immutable update
-                    ...todos.slice(0, index),
-                    event.target.value,
-                    ...todos.slice(index + 1)
-                  ])
+                  // console.log(event.target.value);
+                  let selectedItem = todos[index]
+                  console.log('selectedItem first: ', selectedItem);
+                  selectedItem["content"] = event.target.value;
+                  console.log('selectedItem after: ', selectedItem);
+                  todos[index] = selectedItem;
+                  setTodos([...todos]) //setTodo({...myobj})
+                  console.log(todos);
+                  putNewTodoItem(toDoList.id, todos)
+
+                  // onLeave
+                  // save: putNewTodoItem(toDoList.id, todos) // BEHÖVER LÄGGA TILL ID
+                  // istället kan bygga en save endpoint 
+
+                  // ha kvar save button + ny funktion autoSave som save auto 
+
                 }}
                 className={classes.textField}
               />
+
               <Button // delete (trash) button 
                 size='small'
                 color='secondary'
                 className={classes.standardSpace}
-                onClick={() => {
-                  setTodos([ // immutable delete
-                    ...todos.slice(0, index),
-                    ...todos.slice(index + 1)
-                  ])
+                onClick={ () => {
+                  // setTodos([ // immutable delete
+                  //   ...todos.slice(0, index),
+                  //   ...todos.slice(index + 1)
+                  // ])
+                  deleteTodoitem(toDoList.id, todoItem)
                 }}
               >
                 <DeleteIcon />
               </Button>
+
             </div>
           ))}
+
           <CardActions>
             <Button // add todo (+) button
               type='button'
               color='primary'
               onClick={() => {
-                setTodos([...todos, ''])
+                setTodos([...todos, {id: todos.length + 1, content: '', complete: false}]) // lägger till en ny tom "" i arrayen (ny item)
               }}
             >
               Add Todo <AddIcon />
             </Button>
-            <Button type='submit' variant='contained' color='primary'
-              // onClick={() =>{
-              //   putNewTodoItem(toDoList.id, todos)
-              // }}
+            {/* <Button type='submit' variant='contained' color='primary' */}
+            <Button variant='contained' color='primary'
+              onClick={() =>{
+                putNewTodoItem(toDoList.id, todos) // BEHÖVER LÄGGA TILL ID
+              }}
             >
-              
               Save
             </Button>
           </CardActions>
+
         </form>
+
       </CardContent>
     </Card>
   )

@@ -1,5 +1,5 @@
-import React, { Fragment, useState, useEffect } from 'react'
-import { TextField, Card, CardContent, CardActions, Button, Typography } from '@material-ui/core'
+import React, { Fragment, useState } from 'react'
+import { TextField, Card, CardContent, Button, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import uuid from 'uuid'; 
@@ -30,9 +30,9 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export const Form = ( {inputValue, setInputValue, toDoLists, setToDoLists, postNewTodoList} ) => {
-    // console.log(toDoLists);
-    // console.log(newTodoList);
+export const Form = ( {toDoLists, setToDoLists, postNewTodoList} ) => {
+    const [inputValue, setInputValue] = useState(""); // input value in "add todos"
+
     const classes = useStyles();
     const handleSubmitTodo = e => {
         e.preventDefault();
@@ -40,10 +40,9 @@ export const Form = ( {inputValue, setInputValue, toDoLists, setToDoLists, postN
             console.log("No input todo list value");
             return;
         }
-
+        console.log(inputValue);
         let uniqueId = uuid.v4(); 
-        // genom att göra detta så sätter vi toDoLists variabeln som definieras i toDoLists.jsx till toDoLists + ny
-        // detta är dock endast en setState, gör inget med databasen
+
         setToDoLists([
             ...Object.entries(toDoLists), { 
                 [uniqueId]: {
@@ -54,13 +53,11 @@ export const Form = ( {inputValue, setInputValue, toDoLists, setToDoLists, postN
                 }
             }
         ])
-
-        // sätter saker till databasen 
         postNewTodoList({
-                id: [uniqueId],
-                title: inputValue,
-                todos: [], 
-                completed: false
+            id: uniqueId,
+            title: inputValue,
+            todos: [], 
+            completed: false
         })
         setInputValue(""); 
     }

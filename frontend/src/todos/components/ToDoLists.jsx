@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Card from '@material-ui/core/Card'
-import Button from '@material-ui/core/Button'
+// import Button from '@material-ui/core/Button'
 import CardContent from '@material-ui/core/CardContent'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -13,14 +13,8 @@ import { ToDoListForm } from './ToDoListForm'
 import { Form } from './Form'
 
 export const ToDoLists = ({ style }) => {
-  const [toDoLists, setToDoLists] = useState({}) // object with all todo lists
+  const [toDoLists, setToDoLists] = useState({}) // object with all todo lists  
   const [activeList, setActiveList] = useState() // list of chosen todo list
-  const [inputValue, setInputValue] = useState("");
-  // const [todos, setTodos] = useState(toDoLists[activeList].todos)
-
-  useEffect(() => {
-    fetchData()
-  }, [])
 
   // Set data once
   const fetchData = () => {
@@ -34,9 +28,11 @@ export const ToDoLists = ({ style }) => {
       console.log(err);
     })
   }
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   // Posts/adds new todo list 
-  // Kan använda hooks här tack vare inuti komponenten
   const postNewTodoList = ({id, title, todos, completed}) => {
     fetch("http://localhost:3001/todo", { 
       method: 'POST', 
@@ -58,47 +54,21 @@ export const ToDoLists = ({ style }) => {
     .then(setToDoLists)
   }
 
-  // // id är todoList id
-  // // todos är array med todo items
-  // const putNewTodoItem = (id, todos) => {
-  //   console.log('todos: ', todos);
-  //   console.log('id: ', id);
-  //   fetch(`http://localhost:3001/todo/${id}/`, {
-  //     method: "PUT",
-  //     headers: { "Content-Type": "application/json; charset=utf-8" },
-  //     body: JSON.stringify({
-  //       todos: todos 
-  //     })
-  //   }).then(response => {
-  //       console.log(response);
-  //       console.log("todos: " + todos);
-  //       return response.json(); 
-  //     })
-  //     .then(setToDoLists) // sätt ny toDoLists och uppdatera server
-  //     // .then(setTodos)
-  //     .catch(e => {
-  //       console.log("ERROR: " + e);
-  //       console.error(e)
-  //     });
-  // }
-
   if (!Object.keys(toDoLists).length) return null
-  // console.log(Object.keys(toDoLists)); // THE TODO LIST ARRAY (with updated)
+  // console.log('toDoLists: ', toDoLists);
+
   return <Fragment>
-    {/* {console.log(toDoLists)} */}
     <Card style={style}>
       <CardContent style={{fontFamilty: 'Space Grotesk'}}>
-        <Typography
-          component='h2'
-        >
+        <Typography component='h2'>
           My ToDo Lists
         </Typography>
-        <List>
+        <List> 
           {Object.keys(toDoLists).map((key) => <ListItem
             key={key}
             button
             onClick={() => setActiveList(key)}
-          >
+          >           
             <ListItemIcon>
               <ReceiptIcon />
             </ListItemIcon>
@@ -107,37 +77,26 @@ export const ToDoLists = ({ style }) => {
         </List>
       </CardContent>
     </Card>
+
     {toDoLists[activeList] && <ToDoListForm // ToDoListForm component
-      key={activeList} // use key to make React recreate component to reset internal state
+      // use key to make React recreate component to reset internal state
+      key={activeList} // activelist (key) is key of todo list (e.g. 0000000001)
       toDoList={toDoLists[activeList]}
       saveToDoList={(id, { todos }) => {
         console.log('todos: ', todos);
-        // putNewTodoItem(id, todos); 
         const listToUpdate = toDoLists[id]
-        console.log('id: ', id);
-        console.log('toDoLists: ', toDoLists);
-        console.log('listToUpdate: ', listToUpdate);
         setToDoLists({
           ...toDoLists, 
           [id]: { ...listToUpdate, todos }
         })
       }}
-      // putNewTodoItem={putNewTodoItem}
     />}
+
     <Form 
-      inputValue={inputValue} 
-      setInputValue={setInputValue} 
       toDoLists={toDoLists} 
       setToDoLists={setToDoLists} 
       postNewTodoList={postNewTodoList}
     />
-      {/* <Button onClick={ () => postNewTodoList(
-        { id: 10, 
-          title: 'hey', 
-          todos: ['yeah'], 
-          completed: false }) }>
-        Add Todo List
-      </Button> */}
   </Fragment>
 }
 
