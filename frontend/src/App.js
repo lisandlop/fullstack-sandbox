@@ -53,7 +53,7 @@ export default App
 /* TO DO
 
   * UX and design (learn more about Material UI)
-  * Delete todo list (+ confirm modal "are you sure?")
+  * Delete entire todo list (+ confirm modal "are you sure?")
   * Be able to change name of todo list 
   
   * Sellpy colors & font

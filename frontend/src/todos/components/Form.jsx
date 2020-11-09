@@ -9,7 +9,6 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         margin: '1rem 5rem 0rem 5rem', 
         // padding: '1rem', 
-        fontFamily: 'Roboto'
     },
     content: {
         display: 'flex',
